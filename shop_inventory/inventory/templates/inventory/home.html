@@ -1,0 +1,130 @@
+{% extends 'inventory/base.html' %}
+{% load tz %}
+
+{% block title %}Welcome – Shop Inventory{% endblock %}
+
+{% block extra_css %}
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #fff8f2, #ffeedd);
+    color: #333;
+  }
+
+  /* 🎯 Nav — No Background */
+  .navbar {
+    background: none !important;
+    border-bottom: none;
+    box-shadow: none;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .navbar-brand {
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: #ff6b00 !important;
+  }
+
+  /* 💡 Hero */
+  .hero {
+    text-align: center;
+    padding: 5rem 2rem 3rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .hero h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    background: linear-gradient(to right, #ff9900, #ff6b00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 1rem;
+  }
+
+  .hero p {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 2.5rem;
+  }
+
+  /* 🔍 Search Input */
+  .form-control-lg {
+    border: 2px solid #ff9900;
+    border-radius: 50px;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+    transition: 0.3s;
+    box-shadow: 0 2px 6px rgba(255, 153, 0, 0.1);
+  }
+
+  .form-control-lg:focus {
+    border-color: #ff6b00;
+    box-shadow: 0 0 0 0.15rem rgba(255, 107, 0, 0.2);
+  }
+
+  /* 🧡 Buttons */
+  .btn {
+    border-radius: 50px;
+    padding-left: 1.6rem;
+    padding-right: 1.6rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+
+  .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+
+  .btn-gradient {
+    background-image: linear-gradient(to right, #ff9900, #ff6b00);
+    color: white;
+    border: none;
+  }
+
+  .btn-outline-gradient {
+    border: 2px solid #ff6b00;
+    color: #ff6b00;
+    background: transparent;
+  }
+
+  .btn-outline-gradient:hover {
+    background-color: #ff6b00;
+    color: white;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="hero">
+  <h1>Welcome to Shop Inventory</h1>
+  <p>Track stock levels, prices & categories effortlessly — and stylishly.</p>
+
+  <!-- 🔍 Search Form -->
+  <form action="{% url 'inventory:item-list' %}" method="get" class="row g-3 justify-content-center mb-4">
+    <div class="col-12 col-md-6 col-lg-5">
+      <input type="text" name="q" class="form-control form-control-lg" placeholder="🔎 Search item name or category" />
+    </div>
+    <div class="col-auto align-self-center">
+      <input type="hidden" name="in_stock" value="1" />
+      <button type="submit" class="btn btn-outline-gradient btn-lg">
+        <i class="bi bi-search me-2"></i> Search In‑Stock
+      </button>
+    </div>
+  </form>
+
+  <!-- 🚀 CTA Buttons -->
+  <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+    <a href="{% url 'inventory:item-add' %}" class="btn btn-gradient btn-lg px-5">
+      <i class="bi bi-plus-circle me-2"></i> Add Item
+    </a>
+    <a href="{% url 'inventory:item-list' %}" class="btn btn-outline-gradient btn-lg px-5">
+      <i class="bi bi-box-seam me-2"></i> View Items
+    </a>
+  </div>
+</div>
+{% endblock %}

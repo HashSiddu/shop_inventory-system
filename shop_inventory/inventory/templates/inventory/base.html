@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}Shop Inventory{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f2f5f9;
+            min-height: 100vh;
+            margin: 0;
+            padding-bottom: 40px; /* space for footer */
+        }
+        .container-custom {
+            background: #fff;
+            padding: 40px 30px;
+            margin-top: 50px;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgb(0 0 0 / 0.05);
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 600;
+            color: #0d6efd;
+        }
+        .btn-primary {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+            border-color: #0a58ca;
+        }
+        .btn-outline-primary {
+            color: #0d6efd;
+            border-color: #0d6efd;
+        }
+        .btn-outline-primary:hover {
+            background-color: #0d6efd;
+            color: white;
+        }
+        nav.navbar {
+            box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+        }
+        footer {
+            text-align: center;
+            color: #777;
+            margin-top: 60px;
+            padding-bottom: 20px;
+            font-size: 0.9rem;
+        }
+        /* Validation styling */
+        .invalid-feedback {
+            display: block;
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="{% url 'inventory:home' %}">Shop Inventory</a>
+  </div>
+</nav>
+
+<div class="container container-custom">
+    {% block content %}{% endblock %}
+</div>
+
+<footer>
+    &copy; {{ now.year }} Shop Inventory. All rights reserved.
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

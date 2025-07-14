@@ -1,0 +1,221 @@
+{% extends 'inventory/base.html' %}
+
+{% block title %}Items – Shop Inventory{% endblock %}
+
+{% block extra_css %}
+<style>
+  body {
+    background: linear-gradient(135deg, #fff8f2, #ffeedd);
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+  }
+
+  .navbar {
+    background: none !important;
+    box-shadow: none;
+    border: none;
+    padding: 1rem 0;
+  }
+
+  .navbar-brand {
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: #ff6b00 !important;
+  }
+
+  h2 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    background: linear-gradient(to right, #ff9900, #ff6b00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 2.5rem;
+    text-align: center;
+  }
+
+  .form-control-lg {
+    border-radius: 999px;
+    border: 2px solid #ff9900;
+    padding: 0.75rem 1.5rem;
+    transition: 0.3s;
+  }
+
+  .form-control-lg:focus {
+    border-color: #ff6b00;
+    box-shadow: 0 0 0 0.15rem rgba(255,107,0,0.2);
+  }
+
+  .btn {
+    border-radius: 999px;
+    font-weight: 600;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+  }
+
+  .btn-outline-primary {
+    border: 2px solid #ff6b00;
+    color: #ff6b00;
+  }
+
+  .btn-outline-primary:hover {
+    background-color: #ff6b00;
+    color: #fff;
+  }
+
+  .table {
+    background: white;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    font-size: 0.95rem;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  .table th {
+    background-color: #ffa011;
+    color: rgb(255, 255, 255);
+    padding: 1rem 1.25rem;
+    vertical-align: middle;
+  }
+
+  .table td {
+    padding: 0.85rem 1.25rem;
+    vertical-align: middle;
+    border-top: 1px solid #f1c80e;
+  }
+
+  .table-hover tbody tr:hover {
+    background-color: #fe880a;
+    transition: background-color 0.2s ease;
+  }
+
+  .badge {
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: 999px;
+    padding: 0.4em 0.8em;
+  }
+
+  .btn-sm {
+    font-size: 0.85rem;
+    padding: 0.4em 0.8em;
+    border-radius: 999px;
+  }
+
+  .pagination .page-link {
+    border-radius: 999px !important;
+  }
+
+  .btn-success {
+    background-image: linear-gradient(to right, #ff9900, #ff6b00);
+    border: none;
+    color: white;
+  }
+
+  .btn-success:hover {
+    box-shadow: 0 4px 12px rgba(255, 107, 0, 0.3);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<h2>📦 Inventory Items</h2>
+
+<!-- Search & filter -->
+<form method="get" class="row g-3 mb-4 align-items-center justify-content-center">
+  <div class="col-md-5 col-lg-4">
+    <input type="text" name="q" value="{{ q }}" class="form-control form-control-lg" placeholder="🔎 Search item name or category" />
+  </div>
+  <div class="col-auto form-check">
+    <input type="checkbox" name="in_stock" value="1" id="in_stock" class="form-check-input" {% if in_stock %}checked{% endif %} />
+    <label class="form-check-label fw-semibold" for="in_stock">Only in‑stock</label>
+  </div>
+  <div class="col-auto">
+    <button type="submit" class="btn btn-outline-primary btn-lg">
+      <i class="bi bi-search"></i> Search
+    </button>
+  </div>
+</form>
+
+<!-- Item Table -->
+<table class="table table-hover align-middle">
+  <thead>
+    <tr>
+      <th>Item Name</th>
+      <th>Price (₹)</th>
+      <th>Quantity</th>
+      <th>Category</th>
+      <th>Stock Status</th>
+      <th class="text-end">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in items %}
+      <tr class="{% if item.quantity == 0 %}table-danger{% elif item.quantity < 5 %}table-warning{% endif %}">
+        <td class="fw-semibold">{{ item.name }}</td>
+        <td>₹{{ item.price }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.get_category_display }}</td>
+        <td>
+          {% if item.quantity == 0 %}
+            <span class="badge bg-danger">Out of stock</span>
+          {% elif item.quantity < 5 %}
+            <span class="badge bg-warning text-dark">Low stock</span>
+          {% else %}
+            <span class="badge bg-success">In stock</span>
+          {% endif %}
+        </td>
+        <td class="text-end">
+          <a href="{% url 'inventory:item-edit' item.pk %}" class="btn btn-sm btn-warning me-1">
+            <i class="bi bi-pencil-square"></i> Edit
+          </a>
+          <a href="{% url 'inventory:item-delete' item.pk %}" class="btn btn-sm btn-danger">
+            <i class="bi bi-trash"></i> Delete
+          </a>
+        </td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="6" class="text-center text-muted py-4">No items match your search.</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<!-- Pagination -->
+{% if is_paginated %}
+<nav aria-label="Page navigation" class="mt-4">
+  <ul class="pagination justify-content-center">
+    {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?{% if q %}q={{ q }}&{% endif %}{% if in_stock %}in_stock=1&{% endif %}page={{ page_obj.previous_page_number }}">« Previous</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">« Previous</span></li>
+    {% endif %}
+    <li class="page-item disabled">
+      <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    </li>
+    {% if page_obj.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?{% if q %}q={{ q }}&{% endif %}{% if in_stock %}in_stock=1&{% endif %}page={{ page_obj.next_page_number }}">Next »</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">Next »</span></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}
+
+<!-- Add Item Button -->
+<div class="text-center">
+  <a href="{% url 'inventory:item-add' %}" class="btn btn-success btn-lg mt-4">
+    <i class="bi bi-plus-circle me-2"></i> Add New Item
+  </a>
+</div>
+{% endblock %}

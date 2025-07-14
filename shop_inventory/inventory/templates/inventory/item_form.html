@@ -1,0 +1,188 @@
+{% extends 'inventory/base.html' %}
+{% load static %}
+
+{% block title %}
+  {% if view.object %}Edit{% else %}Add{% endif %} Item
+{% endblock %}
+
+{% block extra_css %}
+<style>
+  body {
+    background: linear-gradient(135deg, #fff8f2, #ffeedd);
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+    margin: 0;
+  }
+
+  /* 🔧 Navbar */
+  .navbar {
+    background: none !important;
+    border: none;
+    box-shadow: none;
+    padding: 1rem 0;
+  }
+
+  .navbar-brand {
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: #ff6b00 !important;
+  }
+
+  .nav-link-home {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #777;
+    margin-top: -1rem;
+  }
+
+  .nav-link-home a {
+    color: #ff6b00;
+    text-decoration: none;
+  }
+
+  .nav-link-home a:hover {
+    text-decoration: underline;
+  }
+
+  /* 📝 Form */
+  .form-box {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+    padding: 2rem;
+    max-width: 480px;
+    margin: 2.5rem auto;
+  }
+
+  h2 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    background: linear-gradient(to right, #ff9900, #ff6b00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-label {
+    font-weight: 500;
+    margin-bottom: 0.35rem;
+    display: block;
+    font-size: 0.95rem;
+  }
+
+  input, select, textarea {
+    border-radius: 50px;
+    border: 2px solid #ff9900;
+    padding: 0.5rem 1rem;
+    width: 100%;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: #ff6b00;
+    box-shadow: 0 0 0 0.15rem rgba(255, 107, 0, 0.2);
+    outline: none;
+  }
+
+  .invalid-feedback {
+    font-size: 0.85rem;
+    color: #dc3545;
+    margin-top: 0.25rem;
+  }
+
+  .btn {
+    border-radius: 999px;
+    font-weight: 600;
+    padding: 0.6rem 1.5rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+  }
+
+  .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+  }
+
+  .btn-primary {
+    background-image: linear-gradient(to right, #ff9900, #ff6b00);
+    border: none;
+    color: white;
+  }
+
+  .btn-secondary {
+    border: 2px solid #ff6b00;
+    color: #ff6b00;
+    background: transparent;
+  }
+
+  .btn-secondary:hover {
+    background-color: #ffe1cc;
+    color: #ff6b00;
+  }
+
+  .action-buttons {
+    text-align: center;
+    margin-top: 1.8rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="nav-link-home">
+  <a href="{% url 'inventory:home' %}"><i class="bi bi-house-door-fill me-1"></i> Home</a>
+</div>
+
+<div class="form-box">
+  <h2>{% if view.object %}Edit{% else %}Add{% endif %} Item</h2>
+
+  <form method="post" novalidate class="needs-validation">
+    {% csrf_token %}
+    {% for field in form %}
+      <div class="mb-3">
+        <label class="form-label">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+          <div class="invalid-feedback d-block">
+            {{ field.errors|striptags }}
+          </div>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <div class="action-buttons">
+      <button type="submit" class="btn btn-primary">
+        <i class="bi bi-check-circle me-2"></i> Save
+      </button>
+      <a href="{% url 'inventory:item-list' %}" class="btn btn-secondary">
+        <i class="bi bi-x-circle me-2"></i> Cancel
+      </a>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const fields = document.querySelectorAll("form input, form select, form textarea");
+
+    fields.forEach((field, index) => {
+      field.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          const nextField = fields[index + 1];
+          if (nextField) {
+            nextField.focus();
+          }
+        }
+      });
+    });
+  });
+</script>
+{% endblock %}
